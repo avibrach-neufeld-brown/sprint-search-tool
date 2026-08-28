@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+  <meta
+    name="description"
+    content="Search Brown University SPRINT experiential learning opportunities."
+  >
+  <title>SPRINT Opportunity Directory</title>
+  <link rel="stylesheet" href="./assets/styles.css">
+  <script type="module" src="./assets/app.js"></script>
+</head>
+<body>
+  <main class="directory" id="main-content">
+    <header class="directory__header">
+      <div>
+        <p class="eyebrow">Brown University</p>
+        <h1>Find a SPRINT opportunity</h1>
+        <p class="intro">
+          Search experiential learning opportunities by program, field,
+          keyword, or location.
+        </p>
+      </div>
+    </header>
+
+    <section class="search-panel" aria-labelledby="search-heading">
+      <h2 id="search-heading" class="visually-hidden">
+        Search and filter opportunities
+      </h2>
+
+      <div class="search-field">
+        <label for="opportunity-search">Search opportunities</label>
+        <div class="search-input-wrapper">
+          <svg
+            class="search-icon"
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            width="20"
+            height="20"
+          >
+            <path
+              d="m21 21-4.35-4.35m2.35-5.15a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-width="2"
+            />
+          </svg>
+          <input
+            id="opportunity-search"
+            type="search"
+            autocomplete="off"
+            placeholder="Search organizations, projects, and keywords"
+          >
+        </div>
+      </div>
+
+      <div class="filter-toolbar" aria-label="Opportunity filters">
+        <details class="filter-menu" id="program-filter">
+          <summary>
+            <span>Program</span>
+            <span class="filter-count" aria-hidden="true"></span>
+          </summary>
+          <fieldset>
+            <legend class="visually-hidden">Filter by program</legend>
+            <div class="filter-options" data-filter-options="program"></div>
+          </fieldset>
+        </details>
+
+        <details class="filter-menu" id="field-filter">
+          <summary>
+            <span>Field/Industry</span>
+            <span class="filter-count" aria-hidden="true"></span>
+          </summary>
+          <fieldset>
+            <legend class="visually-hidden">Filter by field or industry</legend>
+            <div class="filter-options" data-filter-options="field"></div>
+          </fieldset>
+        </details>
+
+        <details class="filter-menu" id="location-filter" hidden>
+          <summary>
+            <span>Location</span>
+            <span class="filter-count" aria-hidden="true"></span>
+          </summary>
+          <fieldset>
+            <legend class="visually-hidden">Filter by location</legend>
+            <div class="filter-options" data-filter-options="location"></div>
+          </fieldset>
+        </details>
+
+        <button class="clear-button" id="clear-filters" type="button" disabled>
+          Clear filters
+        </button>
+      </div>
+    </section>
+
+    <section class="results-section" aria-labelledby="results-heading">
+      <div class="results-heading">
+        <div>
+          <h2 id="results-heading">Opportunities</h2>
+          <p
+            class="results-count"
+            id="results-count"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            Loading opportunities…
+          </p>
+        </div>
+      </div>
+
+      <div
+        id="loading-state"
+        class="message-state"
+        role="status"
+      >
+        Loading opportunities…
+      </div>
+
+      <div id="error-state" class="message-state message-state--error" hidden>
+        <h3>We couldn’t load the opportunity directory.</h3>
+        <p>Please refresh this page or try again shortly.</p>
+      </div>
+
+      <div id="empty-state" class="message-state" hidden>
+        <h3>No opportunities match your search.</h3>
+        <p>Try changing your search or clearing one or more filters.</p>
+        <button id="empty-clear" class="secondary-button" type="button">
+          Clear search and filters
+        </button>
+      </div>
+
+      <ul
+        class="opportunity-grid"
+        id="opportunity-grid"
+        aria-label="Opportunity results"
+      ></ul>
+
+      <div class="load-actions" id="load-actions" hidden>
+        <button id="load-more" class="primary-button" type="button">
+          Load 30 more
+        </button>
+        <button id="load-all" class="secondary-button" type="button">
+          Load all
+        </button>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

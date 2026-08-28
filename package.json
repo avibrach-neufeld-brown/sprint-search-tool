@@ -1,0 +1,17 @@
+{
+  "name": "sprint-search-tool",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Brown University SPRINT opportunity directory",
+  "type": "module",
+  "scripts": {
+    "import": "node scripts/import-sheet.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "node --test",
+    "prepare-site": "npm run import && npm test && npm run build",
+    "serve": "python3 -m http.server 8000"
+  },
+  "dependencies": {
+    "csv-parse": "^6.1.0"
+  }
+}
