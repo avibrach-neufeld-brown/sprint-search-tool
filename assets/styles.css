@@ -655,3 +655,57 @@ a:focus-visible {
 .opportunity-title a:focus-visible {
   text-decoration: none;
 }
+
+.cycle-label {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  margin: 0.25rem 0 0.8rem;
+  color: var(--brown-dark);
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.025em;
+  background: var(--cream);
+  border-radius: 999px;
+}
+
+.program-overview {
+  margin: 1rem 0 0;
+}
+
+.program-overview a {
+  display: inline-flex;
+  gap: 0.4rem;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.55rem 0.9rem;
+  color: var(--brown);
+  font-weight: 800;
+  text-decoration: none;
+  background: var(--white);
+  border: 2px solid var(--white);
+  border-radius: 0.4rem;
+}
+
+.program-overview a::after {
+  content: "→";
+  transition: transform 150ms ease;
+}
+
+.program-overview a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.program-overview a:hover::after {
+  transform: translateX(0.2rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .program-overview a::after {
+    transition: none;
+  }
+
+  .program-overview a:hover::after {
+    transform: none;
+  }
+}

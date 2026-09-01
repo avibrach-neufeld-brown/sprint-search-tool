@@ -17,17 +17,24 @@ const SHEET_ID = "1ks63ew54RtEUyghnSu4DJIZTxqrikgkldc32qbmToyo";
 const urls = {
   opportunities: sheetCsvUrl("Opportunities"),
   programs: sheetCsvUrl("Programs"),
-  taxonomy: sheetCsvUrl("Taxonomy")
+  taxonomy: sheetCsvUrl("Taxonomy"),
+  settings: sheetCsvUrl("Settings")
 };
 
 const errors = [];
 const warnings = [];
 
 try {
-  const [opportunityRows, programRows, taxonomyRows] = await Promise.all([
+  const [
+    opportunityRows,
+    programRows,
+    taxonomyRows,
+    settingsRows
+  ] = await Promise.all([
     fetchSheet(urls.opportunities, "Opportunities"),
     fetchSheet(urls.programs, "Programs"),
-    fetchSheet(urls.taxonomy, "Taxonomy")
+    fetchSheet(urls.taxonomy, "Taxonomy"),
+    fetchSheet(urls.settings, "Settings")
   ]);
 
   requireHeaders("Opportunities", opportunityRows, [
@@ -60,9 +67,15 @@ try {
     "Display Order"
   ]);
 
+  requireHeaders("Settings", settingsRows, [
+    "Key",
+    "Value"
+  ]);
+
   const programs = parsePrograms(programRows);
   const programMap = new Map(programs.map(program => [program.id, program]));
   const taxonomy = parseTaxonomy(taxonomyRows);
+  const settings = parseSettings(settingsRows);
   const opportunities = parseOpportunities(opportunityRows, programMap);
 
   validateTaxonomy(opportunities, taxonomy);
@@ -72,6 +85,7 @@ try {
     generatedAt: new Date().toISOString(),
     source: "SPRINT Opportunity Directory Source",
     opportunityCount: opportunities.length,
+    settings,
     opportunities,
     programs,
     taxonomy
@@ -172,6 +186,89 @@ function requireHeaders(sheetName, rows, requiredHeaders) {
       });
     }
   }
+}
+
+function parseSettings(rows) {
+  const values = new Map();
+  const supportedKeys = new Set([
+    "cycle_name",
+    "program_overview_label",
+    "program_overview_url"
+  ]);
+
+  rows.forEach((row, index) => {
+    const rowNumber = index + 2;
+    const key = clean(row.Key);
+    const value = clean(row.Value);
+
+    if (!key && !value) {
+      return;
+    }
+
+    if (!key) {
+      addError(
+        "Settings",
+        rowNumber,
+        "Key",
+        "A setting key is required."
+      );
+      return;
+    }
+
+    if (values.has(key)) {
+      addError(
+        "Settings",
+        rowNumber,
+        "Key",
+        `Duplicate setting key "${key}".`
+      );
+      return;
+    }
+
+    if (!supportedKeys.has(key)) {
+      addWarning(
+        "Settings",
+        rowNumber,
+        "Key",
+        `Unrecognized setting key "${key}".`
+      );
+    }
+
+    values.set(key, value);
+  });
+
+  for (const requiredKey of supportedKeys) {
+    if (!values.get(requiredKey)) {
+      addError(
+        "Settings",
+        null,
+        "Value",
+        `Required setting "${requiredKey}" is missing or blank.`
+      );
+    }
+  }
+
+  const programOverviewUrl =
+    values.get("program_overview_url") || "";
+
+  if (
+    programOverviewUrl &&
+    !isHttpsUrl(programOverviewUrl)
+  ) {
+    addError(
+      "Settings",
+      null,
+      "Value",
+      "The program_overview_url setting must use HTTPS."
+    );
+  }
+
+  return {
+    cycleName: values.get("cycle_name") || "",
+    programOverviewLabel:
+      values.get("program_overview_label") || "",
+    programOverviewUrl
+  };
 }
 
 function parsePrograms(rows) {

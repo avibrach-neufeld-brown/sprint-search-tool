@@ -25,7 +25,10 @@ const elements = {
   loadActions: document.querySelector("#load-actions"),
   loadMore: document.querySelector("#load-more"),
   loadAll: document.querySelector("#load-all"),
-  locationFilter: document.querySelector("#location-filter")
+  locationFilter: document.querySelector("#location-filter"),
+  cycleLabel: document.querySelector("#cycle-label"),
+  programOverview: document.querySelector("#program-overview"),
+  programOverviewLink: document.querySelector("#program-overview-link")
 };
 
 initialize();
@@ -42,6 +45,7 @@ async function initialize() {
 
     state.directory = await response.json();
 
+    applySettings();
     buildFilters();
     applyFilters();
 
@@ -51,6 +55,33 @@ async function initialize() {
     elements.loading.hidden = true;
     elements.error.hidden = false;
     elements.count.textContent = "Opportunities unavailable";
+  }
+}
+
+function applySettings() {
+  const settings = state.directory.settings;
+
+  if (!settings) {
+    return;
+  }
+
+  if (settings.cycleName) {
+    elements.cycleLabel.textContent = settings.cycleName;
+    elements.cycleLabel.hidden = false;
+
+    document.title =
+      `${settings.cycleName} SPRINT Opportunities | Brown University`;
+  }
+
+  if (
+    settings.programOverviewLabel &&
+    settings.programOverviewUrl
+  ) {
+    elements.programOverviewLink.textContent =
+      settings.programOverviewLabel;
+    elements.programOverviewLink.href =
+      settings.programOverviewUrl;
+    elements.programOverview.hidden = false;
   }
 }
 
